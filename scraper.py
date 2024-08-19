@@ -2,12 +2,12 @@
 Author: Wellington Paidamoyo Mapise
 Date: 01 July 2024
 """
+import os
+import webbrowser
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
-import webbrowser
-import os
 
 def get_experiences_with_selenium(emotion):
     # URLs for different virtual experiences based on emotion
@@ -48,14 +48,67 @@ def get_experiences_with_selenium(emotion):
     # Wait for page to load and find elements
     video_elements = driver.find_elements(By.XPATH, '//a[contains(@href, "/watch?v=")]')
 
-    # Prepare HTML content
-    html_content = '<html><body><h1>Virtual Experiences for Emotion: {}</h1><ul>'.format(emotion)
+    # Prepare HTML content with enhanced structure and styling
+    html_content = f"""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Virtual Experiences for Emotion: {emotion}</title>
+        <style>
+            body {{
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f4;
+                color: #333;
+                margin: 0;
+                padding: 20px;
+            }}
+            h1 {{
+                text-align: center;
+                color: #4CAF50;
+            }}
+            ul {{
+                list-style-type: none;
+                padding: 0;
+            }}
+            li {{
+                background: #fff;
+                margin: 10px 0;
+                padding: 10px;
+                border-radius: 5px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                transition: transform 0.2s;
+            }}
+            li:hover {{
+                transform: scale(1.02);
+            }}
+            a {{
+                text-decoration: none;
+                color: #4CAF50;
+                font-weight: bold;
+            }}
+            a:hover {{
+                color: #333;
+            }}
+        </style>
+    </head>
+    <body>
+        <h1>Virtual Experiences for Emotion: {emotion}</h1>
+        <ul>
+    """
+
     for video in video_elements:
         title = video.text
         link = video.get_attribute('href')
         if title and link:
-            html_content += '<li><a href="{}" target="_blank">{}</a></li>'.format(link, title)
-    html_content += '</ul></body></html>'
+            html_content += f'<li><a href="{link}" target="_blank">{title}</a></li>'
+
+    html_content += """
+        </ul>
+    </body>
+    </html>
+    """
 
     driver.quit()
 
